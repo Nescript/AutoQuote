@@ -9,6 +9,17 @@ __pycache__/
 build/
 dist/
 
+# PyInstaller / packaging
+*.spec
+# If accidental build artifacts copied out of dist/
+*.whl
+*.tar.gz
+
+# Type checking / linters caches
+.mypy_cache/
+.ruff_cache/
+
+
 # Virtual env
 .venv/
 venv/
