@@ -109,3 +109,57 @@ python tests.py
 ## 许可证
 
 MIT
+
+## 打包与分发
+
+### 生成 PyPI 包
+```powershell
+pip install build
+python -m build  # 生成 dist/*.tar.gz 与 *.whl
+```
+上传（需要先在 PyPI 创建项目并配置 API token）：
+```powershell
+pip install twine
+twine upload dist/*
+```
+
+### 生成独立 exe (Windows)
+使用 pyinstaller：
+```powershell
+pip install pyinstaller
+pyinstaller -F -n autoquote-cli main.py
+pyinstaller -F -w -n AutoQuoteGUI gui.py
+```
+产物在 dist/：
+- autoquote-cli.exe  命令行
+- AutoQuoteGUI.exe  图形界面（-w 去除控制台）
+
+可选优化：
+- 添加 `--icon icon.ico` 指定图标
+- 使用 `--add-data "gbt7714;gbt7714"`（若后续有非代码数据文件）
+
+### 发布 GitHub Release
+1. 更新版本号：`gbt7714/__init__.py` 与 `pyproject.toml`
+2. 提交并打标签：
+```powershell
+git commit -am "chore: release 0.1.1"
+git tag -a v0.1.1 -m "Release 0.1.1"
+git push origin main --tags
+```
+3. 在 GitHub Releases 页面创建新发布，上传 dist 中构建产物 (exe / wheel)。
+
+### 版本号策略
+遵循语义化：MAJOR.MINOR.PATCH
+- 新增向后兼容特性：递增 MINOR
+- 修补 bug：递增 PATCH
+- 破坏性修改：递增 MAJOR
+
+### 最小运行依赖
+`pydantic`, `requests`, `python-dateutil`（后续若未使用可移除 requests / dateutil）
+
+### 校验发布内容
+```powershell
+twine check dist/*
+pip install dist/autoquote_gbt7714-0.1.0-py3-none-any.whl --force-reinstall
+python -c "import gbt7714,sys;print(gbt7714.__version__)"
+```
