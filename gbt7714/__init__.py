@@ -12,7 +12,7 @@ __all__ = [
 	'format_reference', 'parse_reference'
 ]
 
-__version__ = '0.1.0'
+__version__ = '0.1.1'
 
 from .models import *  # noqa: F401,F403
 from .formatters import format_reference  # noqa: F401
