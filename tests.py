@@ -89,18 +89,26 @@ def test_apa_journal():
     assert '10.1234/abc.def/5678' in formatted
 
 def test_bibtex_inproceedings():
-        raw = '''@inproceedings{Vaswani2017AttentionIA,
+    raw = '''@inproceedings{Vaswani2017AttentionIA,
     title={Attention is All you Need},
     author={Ashish Vaswani and Noam M. Shazeer and Niki Parmar and Jakob Uszkoreit and Llion Jones and Aidan N. Gomez and Lukasz Kaiser and Illia Polosukhin},
     booktitle={Neural Information Processing Systems},
     year={2017},
     url={https://api.semanticscholar.org/CorpusID:13756489}
 }'''
-        entry = parse_reference(raw)
-        formatted = format_reference(entry)
-        assert '[C]' in formatted
-        assert 'Attention is All you Need[C]' in formatted
-        assert 'Neural Information Processing Systems' in formatted
+    entry = parse_reference(raw)
+    formatted = format_reference(entry)
+    assert '[C]' in formatted
+    assert 'Attention is All you Need[C]' in formatted
+    assert 'Neural Information Processing Systems' in formatted
+
+def test_legacy_nips_style():
+    raw = 'Vaswani, Ashish, et al. "Attention is all you need." Advances in neural information processing systems 30 (2017).'
+    entry = parse_reference(raw)
+    formatted = format_reference(entry)
+    assert '[J]' in formatted
+    assert 'Advances in neural information processing systems' in formatted
+    assert '2017, 30' in formatted or '2017, 30(' in formatted
 
 if __name__ == '__main__':
     test_journal_more_than_three()
@@ -111,4 +119,5 @@ if __name__ == '__main__':
     test_apa_conference()
     test_apa_journal()
     test_bibtex_inproceedings()
+    test_legacy_nips_style()
     print('All tests passed.')

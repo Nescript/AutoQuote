@@ -170,6 +170,18 @@ def parse_reference(raw: str) -> BaseEntry:
             title = apa_conf.group('title').strip()
             conf = apa_conf.group('conf').strip()
             return ConferencePaper(title=title, authors=authors, conference=conf, year=year)
+        # 兼容 NIPS/NeurIPS / 末尾 (Year) 形式：Authors. "Title." JournalName Volume (Year).
+        legacy_nips = re.match(r"(?P<authors>.+?)\.\s*\"?(?P<title>[^\".]+)\"?\.\s*(?P<journal>.+?)\s+(?P<volume>\d+)\s*\((?P<year>\d{4})\)\.?$", text, re.IGNORECASE)
+        if legacy_nips:
+            authors_raw = legacy_nips.group('authors').strip()
+            # 允许尾部 et al.
+            authors_raw = re.sub(r"[,;\s]*(et al\.?|等)$", "", authors_raw, flags=re.IGNORECASE)
+            authors = _parse_apa_authors(authors_raw)
+            title = legacy_nips.group('title').strip()
+            journal = legacy_nips.group('journal').strip().rstrip(',')
+            volume = legacy_nips.group('volume')
+            year = int(legacy_nips.group('year'))
+            return JournalArticle(title=title, authors=authors, journal=journal, year=year, volume=volume)
         raise ValueError("未识别的类型标识（需要包含 [J]/[M]/[EB/OL]/[DB/OL]/[C] 或符合 APA 模式）")
     marker = m.group(1)
 
