@@ -170,6 +170,16 @@ def parse_reference(raw: str) -> BaseEntry:
             title = apa_conf.group('title').strip()
             conf = apa_conf.group('conf').strip()
             return ConferencePaper(title=title, authors=authors, conference=conf, year=year)
+        # APA 会议扩展格式：Authors. (Year, Month). Title. In Conference Name (pp. X-Y). Publisher.
+        apa_conf_ext = re.match(r"(?P<authors>.+?)\s*\((?P<year>\d{4})(?:,\s*[A-Za-z]+)?\)\.\s*(?P<title>.+?)\.\s*In\s+(?P<conf>.+?)\s*\(pp\.\s*(?P<pages>[0-9\-–]+)\)\.\s*(?P<publisher>[^.]+)\.?$", text, re.IGNORECASE)
+        if apa_conf_ext:
+            authors = _parse_apa_authors(apa_conf_ext.group('authors'))
+            year = int(apa_conf_ext.group('year'))
+            title = apa_conf_ext.group('title').strip()
+            conf = apa_conf_ext.group('conf').strip().rstrip('.')
+            pages = apa_conf_ext.group('pages')
+            publisher = apa_conf_ext.group('publisher').strip()
+            return ConferencePaper(title=title, authors=authors, conference=conf, pages=pages, publisher=publisher, year=year)
         # 兼容 NIPS/NeurIPS / 末尾 (Year) 形式：Authors. "Title." JournalName Volume (Year).
         legacy_nips = re.match(r"(?P<authors>.+?)\.\s*\"?(?P<title>[^\".]+)\"?\.\s*(?P<journal>.+?)\s+(?P<volume>\d+)\s*\((?P<year>\d{4})\)\.?$", text, re.IGNORECASE)
         if legacy_nips:

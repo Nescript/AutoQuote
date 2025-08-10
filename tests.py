@@ -110,6 +110,14 @@ def test_legacy_nips_style():
     assert 'Advances in neural information processing systems' in formatted
     assert '2017, 30' in formatted or '2017, 30(' in formatted
 
+def test_apa_conference_extended():
+    raw = 'Dong, Y., Cordonnier, J. B., & Loukas, A. (2021, July). Attention is not all you need: Pure attention loses rank doubly exponentially with depth. In International conference on machine learning (pp. 2793-2803). PMLR.'
+    entry = parse_reference(raw)
+    formatted = format_reference(entry)
+    assert '[C]' in formatted
+    assert 'International conference on machine learning' in formatted
+    assert '2793-2803' in formatted
+
 if __name__ == '__main__':
     test_journal_more_than_three()
     test_journal_english_authors_et_al()
