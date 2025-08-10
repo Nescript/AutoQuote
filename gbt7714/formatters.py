@@ -1,6 +1,6 @@
 from __future__ import annotations
 from typing import List
-from .models import BaseEntry, JournalArticle, Book, WebResource, Author, ConferencePaper
+from .models import BaseEntry, JournalArticle, Book, WebResource, Author, ConferencePaper, BookChapter
 from datetime import date
 
 MAX_AUTHORS = 3
@@ -32,6 +32,8 @@ def format_reference(entry: BaseEntry) -> str:
         return format_journal(entry)
     if isinstance(entry, Book):
         return format_book(entry)
+    if isinstance(entry, BookChapter):
+        return format_book_chapter(entry)
     if isinstance(entry, WebResource):
         return format_web(entry)
     if isinstance(entry, ConferencePaper):
@@ -83,6 +85,25 @@ def format_book(b: Book) -> str:
     else:
         ref += f" {year}."
     return ref.strip()
+
+def format_book_chapter(ch: BookChapter) -> str:
+    authors = format_authors(ch.authors, ch.language)
+    year = ch.year or 'n.d.'
+    author_seg = authors if authors.endswith('.') else authors + '.'
+    ref = f"{author_seg} {ch.title}[M] // {ch.book_title}."
+    if ch.place or ch.publisher:
+        place_pub = f"{ch.place}: {ch.publisher}" if ch.place and ch.publisher else (ch.publisher or ch.place or '')
+    else:
+        place_pub = ''
+    if place_pub:
+        ref += f" {place_pub}, {year}"
+    else:
+        ref += f" {year}"
+    if ch.pages:
+        ref += f": {ch.pages}"
+    if not ref.endswith('.'):
+        ref += '.'
+    return ref
 
 
 def format_date(d: date | None) -> str:

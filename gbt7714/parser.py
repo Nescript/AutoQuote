@@ -7,7 +7,7 @@ missing spaces / Chinese punctuation tolerated. This is a best-effort parser.
 from __future__ import annotations
 import re
 from typing import List
-from .models import Author, JournalArticle, Book, WebResource, BaseEntry, ConferencePaper
+from .models import Author, JournalArticle, Book, WebResource, BaseEntry, ConferencePaper, BookChapter
 from datetime import date
 
 _TYPE_PAT = re.compile(r"\[(J|M|EB/OL|DB/OL|C)\]")
@@ -162,6 +162,17 @@ def parse_reference(raw: str) -> BaseEntry:
             if doi_match:
                 doi = doi_match.group(1)
             return JournalArticle(title=title, authors=authors, journal=journal, year=year, volume=volume, issue=issue, pages=pages, doi=doi)
+        # 书籍章节：Authors. (Year[, Month]). Title. In Book Title (pp. X-Y). Place: Publisher.
+        apa_chapter = re.match(r"(?P<authors>.+?)\s*\((?P<year>\d{4})(?:,[^)]*)?\)\.\s*(?P<title>.+?)\.\s*In\s+(?P<book>.+?)\s*\(pp\.\s*(?P<pages>[0-9\-–]+)\)\.\s*(?P<place>[^:]+):\s*(?P<publisher>[^.]+)\.?$", text, re.IGNORECASE)
+        if apa_chapter:
+            authors = _parse_apa_authors(apa_chapter.group('authors'))
+            year = int(apa_chapter.group('year'))
+            title = apa_chapter.group('title').strip().rstrip('.')
+            book_title = apa_chapter.group('book').strip().rstrip('.')
+            pages = apa_chapter.group('pages')
+            place = apa_chapter.group('place').strip()
+            publisher = apa_chapter.group('publisher').strip()
+            return BookChapter(title=title, authors=authors, book_title=book_title, pages=pages, place=place, publisher=publisher, year=year)
         # 再匹配 APA 会议模式：Authors. (Year). Title. Conference.
         apa_conf = re.match(r"(?P<authors>.+?)\s*\((?P<year>\d{4})\)\.\s*(?P<title>.+?)\.\s*(?P<conf>[^.]+?)\.?$", text)
         if apa_conf:

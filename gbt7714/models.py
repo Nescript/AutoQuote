@@ -78,3 +78,14 @@ class ConferencePaper(BaseEntry):
     pages: Optional[str] = None
     publisher: Optional[str] = None
     doi: Optional[str] = None
+
+class BookChapter(BaseEntry):
+    """Book chapter / section inside an edited book.
+
+    Represented in GB/T as: Authors. Chapter Title[M] // Book Title. Place: Publisher, Year: Pages
+    """
+    type: Literal["book"] = "book"  # reuse book marker [M]
+    book_title: str
+    place: Optional[str] = None
+    publisher: Optional[str] = None
+    pages: Optional[str] = None

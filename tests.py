@@ -118,6 +118,14 @@ def test_apa_conference_extended():
     assert 'International conference on machine learning' in formatted
     assert '2793-2803' in formatted
 
+def test_book_chapter():
+    raw = 'Mineault, P. (2025). Is Attention All You Need?. In From Human Attention to Computational Attention: A Multidisciplinary Approach (pp. 297-314). Cham: Springer Nature Switzerland.'
+    entry = parse_reference(raw)
+    formatted = format_reference(entry)
+    assert '[M]' in formatted
+    assert 'From Human Attention to Computational Attention: A Multidisciplinary Approach' in formatted
+    assert '2025: 297-314' in formatted
+
 if __name__ == '__main__':
     test_journal_more_than_three()
     test_journal_english_authors_et_al()
