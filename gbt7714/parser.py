@@ -200,10 +200,18 @@ def parse_reference(raw: str) -> BaseEntry:
             conf = apa_conf_meta.group('conf').strip().rstrip('.')
             meta = apa_conf_meta.group('meta')
             pages = None
+            volume = None
+            issue = None
             m_pages = re.search(r"p+\.\s*([0-9]+(?:[-–][0-9]+)?)", meta, re.IGNORECASE)
             if m_pages:
                 pages = m_pages.group(1)
-            return ConferencePaper(title=title, authors=authors, conference=conf, pages=pages, year=year)
+            m_vol = re.search(r"Vol\.\s*([0-9A-Za-z]+)", meta, re.IGNORECASE)
+            if m_vol:
+                volume = m_vol.group(1)
+            m_no = re.search(r"No\.\s*([0-9A-Za-z]+)", meta, re.IGNORECASE)
+            if m_no:
+                issue = m_no.group(1)
+            return ConferencePaper(title=title, authors=authors, conference=conf, pages=pages, year=year, volume=volume, issue=issue)
         # 兼容 NIPS/NeurIPS / 末尾 (Year) 形式：Authors. "Title." JournalName Volume (Year).
         legacy_nips = re.match(r"(?P<authors>.+?)\.\s*\"?(?P<title>[^\".]+)\"?\.\s*(?P<journal>.+?)\s+(?P<volume>\d+)\s*\((?P<year>\d{4})\)\.?$", text, re.IGNORECASE)
         if legacy_nips:

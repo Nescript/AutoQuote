@@ -78,6 +78,8 @@ class ConferencePaper(BaseEntry):
     pages: Optional[str] = None
     publisher: Optional[str] = None
     doi: Optional[str] = None
+    volume: Optional[str] = None
+    issue: Optional[str] = None
 
 class BookChapter(BaseEntry):
     """Book chapter / section inside an edited book.

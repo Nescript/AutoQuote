@@ -134,16 +134,25 @@ def format_conference(c: ConferencePaper) -> str:
     authors = format_authors(c.authors, c.language)
     year = c.year or 'n.d.'
     author_seg = authors if authors.endswith('.') else authors + '.'
-    ref = f"{author_seg} {c.title}[C] // {c.conference}."
+    # No space before // per requested style.
+    ref = f"{author_seg} {c.title}[C]//{c.conference}."
     segs = []
     if c.location:
         segs.append(c.location)
     if c.publisher:
         segs.append(c.publisher)
+    year_seg = str(year)
+    if c.volume or c.issue:
+        if c.volume and c.issue:
+            year_seg = f"{year}, {c.volume}({c.issue})"
+        elif c.volume:
+            year_seg = f"{year}, {c.volume}"
+        else:
+            year_seg = f"{year}, ({c.issue})"
     if segs:
-        ref += f" {'; '.join(segs)}, {year}"
+        ref += f" {'; '.join(segs)}, {year_seg}"
     else:
-        ref += f" {year}"
+        ref += f" {year_seg}"
     if c.pages:
         ref += f": {c.pages}"
     if c.doi:

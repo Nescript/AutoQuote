@@ -132,6 +132,17 @@ def test_apa_conference_meta():
     formatted = format_reference(entry)
     assert '[C]' in formatted
     assert 'Icml' in formatted
+    assert '2021, 2(3)' in formatted or '2021, 2(' in formatted
+
+def test_apa_conference_meta_full():
+    raw = 'Choi, M., Kim, H., Han, B., Xu, N., & Lee, K. M. (2020, April). Channel attention is all you need for video frame interpolation. In Proceedings of the AAAI conference on artificial intelligence (Vol. 34, No. 07, pp. 10663-10671).'
+    entry = parse_reference(raw)
+    formatted = format_reference(entry)
+    assert '[C]' in formatted
+    # Expect volume(issue) after year
+    assert '2020, 34(07): 10663-10671' in formatted
+    # Expect no space before //
+    assert '[C]//' in formatted
 
 if __name__ == '__main__':
     test_journal_more_than_three()
