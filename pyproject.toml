@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "autoquote-gbt7714"
-version = "0.1.1"
+version = "0.2.0"
 description = "GB/T 7714-2015 citation parser & formatter (GB/T / APA / BibTeX) with LaTeX bibitem output"
 readme = "README.md"
 authors = [{name="Nescript"}]
@@ -33,3 +33,12 @@ include = ["gbt7714*"]
 
 [project.scripts]
 autoquote-cli = "main:main"
+autoquote-web = "webapp.main:main"
+
+[project.optional-dependencies]
+web = [
+    "fastapi>=0.110",
+    "uvicorn[standard]>=0.30",
+    "jinja2>=3.1",
+    "python-multipart>=0.0.9",
+]

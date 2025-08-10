@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="form-section">
+  <form method="post" action="/parse">
+    <label for="references">输入引用 (每行一条):</label>
+    <textarea id="references" name="references" rows="10" placeholder="在此粘贴引用...">{{ input_text|e }}</textarea>
+    <div class="actions">
+      <button type="submit">解析格式化</button>
+    </div>
+  </form>
+</section>
+
+{% if results is not none %}
+<section class="results">
+  <h2>结果 ({{ results|length }})</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>原始</th>
+        <th>类型</th>
+        <th>GB/T 输出</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for r in results %}
+      <tr class="{{ 'ok' if r.success else 'fail' }}">
+        <td>{{ loop.index }}</td>
+        <td class="raw">{{ r.raw }}</td>
+        <td>{{ r.type if r.success else '—' }}</td>
+        <td>
+          {% if r.success %}
+            <div id="gbt-{{ loop.index }}" class="gbt">{{ r.gbt }}</div>
+          {% else %}
+            <span class="error">{{ r.error }}</span>
+          {% endif %}
+        </td>
+        <td>
+          {% if r.success %}<button type="button" data-copy="gbt-{{ loop.index }}" onclick="copyText('gbt-{{ loop.index }}')">复制</button>{% endif %}
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>AutoQuote GBT7714</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/static/style.css" />
+  <script>
+    function copyText(id){
+      const el = document.getElementById(id);
+      if(!el) return;
+      navigator.clipboard.writeText(el.innerText).then(()=>{
+        const btn = document.querySelector(`[data-copy='${id}']`);
+        if(btn){
+          const old = btn.innerText; btn.innerText = '已复制';
+          setTimeout(()=>btn.innerText = old, 1500);
+        }
+      });
+    }
+  </script>
+</head>
+<body>
+  <header>
+    <h1>AutoQuote GBT7714 Web</h1>
+    <p class="subtitle">支持 GB/T 7714 / APA / BibTeX 解析与格式化</p>
+  </header>
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+  <footer>
+    <p>© 2025 AutoQuote. 本页仅供学术排版使用。</p>
+  </footer>
+</body>
+</html>
