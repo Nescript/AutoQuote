@@ -126,6 +126,13 @@ def test_book_chapter():
     assert 'From Human Attention to Computational Attention: A Multidisciplinary Approach' in formatted
     assert '2025: 297-314' in formatted
 
+def test_apa_conference_meta():
+    raw = 'Bertasius, G., Wang, H., & Torresani, L. (2021, July). Is space-time attention all you need for video understanding?. In Icml (Vol. 2, No. 3, p. 4).'
+    entry = parse_reference(raw)
+    formatted = format_reference(entry)
+    assert '[C]' in formatted
+    assert 'Icml' in formatted
+
 if __name__ == '__main__':
     test_journal_more_than_three()
     test_journal_english_authors_et_al()
