@@ -26,3 +26,14 @@ def test_api_parse_batch():
     data = resp.json()
     assert len(data) == 2
     assert all('gbt' in r for r in data)
+
+
+def test_web_form_bibitem():
+    app = create_app()
+    client = TestClient(app)
+    resp = client.post('/parse', data={
+        'references': 'INNFOS. Robots[EB/OL]. (2020-01-01) [2020-04-30]. https://innfos.com/\n',
+        'mode': 'bibitem'
+    })
+    assert resp.status_code == 200
+    assert '\\bibitem{' in resp.text

@@ -2,24 +2,29 @@
 {% block content %}
 <section class="form-section">
   <form method="post" action="/parse">
-    <label for="references">输入引用 (每行一条):</label>
+    <label for="references">输入参考文献 (每行一条):</label>
     <textarea id="references" name="references" rows="10" placeholder="在此粘贴引用...">{{ input_text|e }}</textarea>
     <div class="actions">
-      <button type="submit">解析格式化</button>
+      <label for="mode">输出格式:</label>
+      <select name="mode" id="mode">
+        <option value="gbt" {% if output_mode!='bibitem' %}selected{% endif %}>GB/T 7714</option>
+        <option value="bibitem" {% if output_mode=='bibitem' %}selected{% endif %}>LaTeX \\bibitem</option>
+      </select>
+      <button type="submit">解析并格式化</button>
     </div>
   </form>
 </section>
 
 {% if results is not none %}
 <section class="results">
-  <h2>结果 ({{ results|length }})</h2>
+  <h2>结果：共 {{ results|length }} 条，成功 {{ success_count }}，失败 {{ fail_count }}</h2>
   <table>
     <thead>
       <tr>
         <th>#</th>
         <th>原始</th>
         <th>类型</th>
-        <th>GB/T 输出</th>
+        <th>{% if output_mode=='bibitem' %}LaTeX \\bibitem{% else %}GB/T 输出{% endif %}</th>
         <th>操作</th>
       </tr>
     </thead>
@@ -31,7 +36,7 @@
         <td>{{ r.type if r.success else '—' }}</td>
         <td>
           {% if r.success %}
-            <div id="gbt-{{ loop.index }}" class="gbt">{{ r.gbt }}</div>
+            <div id="gbt-{{ loop.index }}" class="gbt">{% if output_mode=='bibitem' %}{{ r.bibitem }}{% else %}{{ r.gbt }}{% endif %}</div>
           {% else %}
             <span class="error">{{ r.error }}</span>
           {% endif %}
