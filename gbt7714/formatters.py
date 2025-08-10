@@ -135,7 +135,8 @@ def format_conference(c: ConferencePaper) -> str:
     year = c.year or 'n.d.'
     author_seg = authors if authors.endswith('.') else authors + '.'
     # No space before // per requested style.
-    ref = f"{author_seg} {c.title}[C]//{c.conference}."
+    # 按规范保留 [C] 与 // 之间一个空格
+    ref = f"{author_seg} {c.title}[C] // {c.conference}."
     segs = []
     if c.location:
         segs.append(c.location)

@@ -142,7 +142,7 @@ def test_apa_conference_meta_full():
     # Expect volume(issue) after year
     assert '2020, 34(07): 10663-10671' in formatted
     # Expect no space before //
-    assert '[C]//' in formatted
+    assert '[C] //' in formatted
 
 if __name__ == '__main__':
     test_journal_more_than_three()
